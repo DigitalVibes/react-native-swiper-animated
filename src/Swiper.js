@@ -261,7 +261,7 @@ export default class SwiperAnimated extends PureComponent {
 
     const panX = Math.abs(this.valueX);
     const panY = Math.abs(this.valueY);
-
+    let SwipeSide = false;
     if ((!isNaN(panY) && panX > SWIPE_THRESHOLD) || (!isNaN(panY) && panY > SWIPE_THRESHOLD)) {
       if (stack) {
         // if stack, any direction removes card
@@ -277,11 +277,13 @@ export default class SwiperAnimated extends PureComponent {
       if (this.valueX > 0) {
         onRightSwipe(card);
         this.advanceState(velocity, vy, true);
+        SwipeSide = 'right';
       } else {
         onLeftSwipe(card);
+        SwipeSide = 'left';
         this.advanceState(velocity, vy, false);
       }
-      onRemoveCard(this.currentIndex[this.guid]);
+      onRemoveCard({index: this.currentIndex[this.guid], SwipeSide: SwipeSide});
     } else {
       this.resetPan();
     }
@@ -417,7 +419,7 @@ export default class SwiperAnimated extends PureComponent {
 
       this.cardAnimation = null;
     });
-    this.props.onRemoveCard(this.currentIndex[this.guid]);
+    this.props.onRemoveCard({index: this.currentIndex[this.guid], SwipeSide: 'left'});
   }
 
   forceRightSwipe = () => {
@@ -429,7 +431,7 @@ export default class SwiperAnimated extends PureComponent {
 
       this.cardAnimation = null;
     });
-    this.props.onRemoveCard(this.currentIndex[this.guid]);
+    this.props.onRemoveCard({index: this.currentIndex[this.guid], SwipeSide: 'right'});
   }
 
   handleBackPress = () => {
